@@ -1,2 +1,2 @@
 # bouncing-lines
-The raytracer
+A pretty okay ray tracer.
