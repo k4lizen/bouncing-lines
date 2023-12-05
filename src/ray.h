@@ -22,7 +22,7 @@ public:
 
 private:
     point3 orig;
-    vec3 dir; // should be a unit vector
+    vec3 dir;
 
 };
 
