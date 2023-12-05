@@ -6,6 +6,7 @@
 #include "sphere.h"
 
 #include <iostream>
+#include <fstream>
 
 color ray_color(const ray& r, const hittable& world){
     hit_record rec;
@@ -42,10 +43,12 @@ int main(){
     point3 pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_right + pixel_delta_down);
 
     hittable_list world;
-    world.add(make_shared<sphere>(point3(0, 0, -1), 5));
-    // world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
+    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
+    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
 
-    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+    std::ofstream image_file("image.ppm");
+
+    image_file << "P3\n" << image_width << " " << image_height << "\n255\n";
     for(int i = 0; i < image_height; ++i){
         std::clog << "\rScanlines remaining: " << (image_height - i);
         for(int j = 0; j < image_width; ++j){
@@ -54,10 +57,11 @@ int main(){
             ray r(camera_center, ray_direction);
             
             vec3 pixel_color = ray_color(r, world);
-            write_color(std::cout, pixel_color);
+            write_color(image_file, pixel_color);
         }
     }
     std::clog << "\rDone                                  \n";
+    image_file.close();
 
     return 0;
 }
