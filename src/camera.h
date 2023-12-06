@@ -26,7 +26,7 @@ public:
 
         image_file << "P3\n" << image_width << " " << image_height << "\n255\n";
         for(int i = 0; i < image_height; ++i){
-            std::clog << "\rScanlines remaining: " << (image_height - i);
+            std::clog << "\rScanlines remaining: " << (image_height - i) << " ";
             for(int j = 0; j < image_width; ++j){
                 color pixel_color(0, 0, 0);
                 for(int sample = 0; sample < samples_per_pixel; ++sample){
@@ -85,7 +85,7 @@ private:
         point3 pixel_sample = pixel_center + point_sample_square();
 
         point3 ray_origin = center;
-        point3 ray_direction = ray_origin - pixel_sample;
+        point3 ray_direction = pixel_sample - ray_origin;
         return ray(ray_origin, ray_direction);
     }
 

@@ -19,7 +19,7 @@ inline double degrees_to_radians(double degrees){
 
 // [0, 1)
 inline double random_double(){
-    return rand() / (RAND_MAX + 1);
+    return rand() / (RAND_MAX + 1.0);
 }
 
 // [min, max)
