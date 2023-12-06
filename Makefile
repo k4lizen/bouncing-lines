@@ -1,10 +1,6 @@
 build:
-	g++ ./src/main.cpp -o main.exe
+	g++ ./src/main.cpp -o main.exe -Wall
 
 run:
-	g++ ./src/main.cpp -o main.exe
+	g++ ./src/main.cpp -o main.exe -Wall
 	./main.exe
-
-image:
-	g++ ./src/main.cpp -o main.exe
-	main.exe > image.ppm

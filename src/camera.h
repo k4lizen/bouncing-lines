@@ -14,6 +14,7 @@ class camera {
 public:
     double aspect_ratio = 1.0;
     int image_width = 100;
+    int samples_per_pixel = 10; 
 
     camera(std::string _filename) : filename(_filename) {}
     camera() : camera("image.ppm") {}
@@ -27,12 +28,12 @@ public:
         for(int i = 0; i < image_height; ++i){
             std::clog << "\rScanlines remaining: " << (image_height - i);
             for(int j = 0; j < image_width; ++j){
-                point3 pixel_center = pixel00_loc + (i * pixel_delta_down) + (j * pixel_delta_right);
-                vec3 ray_direction = pixel_center - center;
-                ray r(center, ray_direction);
-                
-                vec3 pixel_color = ray_color(r, world);
-                write_color(image_file, pixel_color);
+                color pixel_color(0, 0, 0);
+                for(int sample = 0; sample < samples_per_pixel; ++sample){
+                    ray r = get_ray(i, j);
+                    pixel_color += ray_color(r, world);
+                }
+                write_color(image_file, pixel_color, samples_per_pixel);
             }
         }
         std::clog << "\rDone                                  \n";
@@ -77,6 +78,21 @@ private:
         vec3 unit_direction = unit_vector(r.direction());
         double a = 0.5 * (unit_direction.y() + 1.0); // from [-1, 1] to [0, 1]
         return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+    }
+
+    ray get_ray(int i, int j) const {
+        point3 pixel_center = pixel00_loc + (i * pixel_delta_down) + (j * pixel_delta_right);
+        point3 pixel_sample = pixel_center + point_sample_square();
+
+        point3 ray_origin = center;
+        point3 ray_direction = ray_origin - pixel_sample;
+        return ray(ray_origin, ray_direction);
+    }
+
+    vec3 point_sample_square() const {
+        double px = -0.5 + random_double();
+        double py = -0.5 + random_double();
+        return (px * pixel_delta_right) + (py * pixel_delta_down);
     }
 };
 
