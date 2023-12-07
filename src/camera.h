@@ -5,6 +5,7 @@
 
 #include "color.h"
 #include "hittable.h"
+#include "material.h"
 
 #include <iostream>
 #include <fstream>
@@ -77,9 +78,12 @@ private:
         hit_record rec;
         static double acne_eps = 0.0000001; 
         if(world.hit(r, interval(0.0 + acne_eps, infinity), rec)){
-            vec3 dir = rec.normal + random_unit_vector(); // Lambertian reflection
-            ray r_bounce(rec.p, dir);            
-            return 0.5 * ray_color(r_bounce, depth - 1, world);
+            ray scattered;
+            color attenuation;
+            if(rec.mat->scatter(r, rec, attenuation, scattered)){
+                return attenuation * ray_color(scattered, depth - 1, world);
+            }
+            return color(0, 0, 0);
         }
 
         // sky
