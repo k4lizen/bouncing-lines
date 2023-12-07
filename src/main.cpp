@@ -28,7 +28,8 @@ void fun_balls(){
                     //difuse 
                     auto albedo = color::random() * color::random();
                     sphere_mat = make_shared<lambertian>(albedo);
-                    world.add(make_shared<sphere>(center, 0.2, sphere_mat));
+                    auto center2 = center + vec3(0, random_double(0, 0.5), 0);
+                    world.add(make_shared<sphere>(center, center2, 0.2, sphere_mat));
                 } else if (choose_mat < 0.95){
                     // metal
                     auto albedo = color::random(0.5, 1);
@@ -55,7 +56,7 @@ void fun_balls(){
 
     camera cam("image2.ppm");
     cam.aspect_ratio = 16.0 / 9.0;
-    cam.image_width = 1200;
+    cam.image_width = 400;
     cam.samples_per_pixel = 10;
     cam.max_depth = 5;
 
@@ -71,8 +72,8 @@ void fun_balls(){
 }
 
 int main(){
-    //fun_balls();
-    //return 0;
+    fun_balls();
+    return 0;
 
     hittable_list world;
 
