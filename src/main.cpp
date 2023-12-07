@@ -1,12 +1,11 @@
 #include "blines_general.h"
 
+#include "bvh.h"
 #include "color.h"
 #include "hittable.h"
-#include "hittable_list.h"
 #include "sphere.h"
 #include "camera.h"
 #include "material.h"
-#include "bvh.h"
 
 #include <iostream>
 #include <fstream>
