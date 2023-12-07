@@ -2,6 +2,7 @@
 #define HITTABLE_H
 
 #include "blines_general.h"
+#include "aabb.h"
 
 class material;
 
@@ -27,6 +28,8 @@ public:
 
     // ray_tmin and ray_tmax are exclusive
     virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
+
+    virtual aabb bounding_box() const = 0;
 };
 
 #endif

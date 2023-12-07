@@ -18,6 +18,12 @@ public:
         z = interval(fmin(a[2], b[2]), fmax(a[2], b[2]));
     }
 
+    aabb(const aabb& box1, const aabb& box2){
+        x = interval(box1.x, box2.x);
+        y = interval(box1.y, box2.y);
+        z = interval(box1.z, box2.z);
+    }
+
     const interval& axis(int n) const {
         if(n == 1) return y;
         if(n == 2) return z;
