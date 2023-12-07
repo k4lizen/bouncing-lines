@@ -26,13 +26,17 @@ public:
 
     bool hit(const ray& r, interval& ray_t) const {
         for(int a = 0; a < 3; ++a){
-            double h1 = (axis(a).min - r.origin()[a]) / r.direction()[a];
-            double h2 = (axis(a).max - r.origin()[a]) / r.direction()[a]; 
-            double t0 = fmin(h1, h2);
-            double t1 = fmax(h1, h2);
+            double invd = 1 / r.direction()[a];
+            double orig = r.origin()[a];
 
-            ray_t.min = fmax(t0, ray_t.min);
-            ray_t.max = fmin(t1, ray_t.min);
+            double t0 = (axis(a).min - orig) * invd;
+            double t1 = (axis(a).max - orig) * invd;
+
+            if(invd < 0)
+                std::swap(t0, t1);
+
+            if(t0 > ray_t.min) ray_t.min = t0;
+            if(t1 < ray_t.max) ray_t.max = t1;
 
             if(ray_t.max <= ray_t.min)
                 return false;
