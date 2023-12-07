@@ -24,6 +24,11 @@ public:
         return x;
     }
 
+    interval expand(double delta) const {
+        double padding = delta / 2;
+        return interval(min - padding, max + padding);
+    }
+
     static const interval empty, universe;
 };
 
