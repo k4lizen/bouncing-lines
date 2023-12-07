@@ -17,6 +17,13 @@ public:
     int image_width = 100;
     int samples_per_pixel = 10;
     int max_depth = 10;
+    double vfov = 90; // has to be 0 < vfov < 180 
+    point3 lookfrom = point3(0, 0, 0);
+    point3 lookat = point3(0, 0, -1);
+    vec3 vup = vec3(0, 1, 0);
+
+    double defocus_angle = 0;
+    double focus_dist = 10;
 
     camera(std::string _filename) : filename(_filename) {}
     camera() : camera("image.ppm") {}
@@ -24,7 +31,7 @@ public:
     void render(const hittable& world){
         initialize();
 
-        std::ofstream image_file("image.ppm");
+        std::ofstream image_file(filename);
 
         image_file << "P3\n" << image_width << " " << image_height << "\n255\n";
         for(int i = 0; i < image_height; ++i){
@@ -49,25 +56,36 @@ private:
     point3 pixel00_loc;
     vec3 pixel_delta_right;
     vec3 pixel_delta_down;
+    vec3 u, v, w; // camera frame basis vectors (back, up, right)
+    vec3 defocus_disk_u, defocus_disk_v;
 
     void initialize(){
         image_height = static_cast<int>(image_width / aspect_ratio);
         image_height = (image_height < 1) ? 1 : image_height;
 
-        double viewport_height = 2.0;
-        double viewport_width = viewport_height * (static_cast<double>(image_width) / image_height);
+        center = lookfrom;
 
-        double focal_lenght = 1.0;
-        center = point3(0, 0, 0);
+        double theta = degrees_to_radians(vfov);
+        double h = tan(theta / 2);
+        double viewport_height = 2 * h * focus_dist;
+        double viewport_width = viewport_height * image_width / image_height;
 
-        vec3 viewport_right = vec3(viewport_width, 0, 0);
-        vec3 viewport_down = vec3(0, -viewport_height, 0);
+        w = unit_vector(lookfrom - lookat); // back
+        u = unit_vector(cross(vup, w)); // right
+        v = cross(w, u); // up
+
+        vec3 viewport_right = viewport_width * u;
+        vec3 viewport_down = viewport_height * -v;
         
         pixel_delta_right = viewport_right / image_width;
         pixel_delta_down = viewport_down / image_height;
 
-        point3 viewport_upper_left = center - vec3(0, 0, focal_lenght) - viewport_right / 2 - viewport_down / 2;
+        point3 viewport_upper_left = center - (focus_dist * w) - viewport_right / 2 - viewport_down / 2;
         pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_right + pixel_delta_down);
+    
+        double defocus_radius = focus_dist * tan(degrees_to_radians(defocus_angle / 2));
+        defocus_disk_u = u * defocus_radius;
+        defocus_disk_v = v * defocus_radius;
     }
 
     color ray_color(const ray& r, int depth, const hittable& world){
@@ -96,9 +114,14 @@ private:
         point3 pixel_center = pixel00_loc + (i * pixel_delta_down) + (j * pixel_delta_right);
         point3 pixel_sample = pixel_center + point_sample_square();
 
-        point3 ray_origin = center;
+        point3 ray_origin = (defocus_angle <= 0) ? center : defocus_disk_sample();
         point3 ray_direction = pixel_sample - ray_origin;
         return ray(ray_origin, ray_direction);
+    }
+
+    vec3 defocus_disk_sample() const {
+        point3 p = random_in_unit_disk();
+        return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
     }
 
     vec3 point_sample_square() const {
