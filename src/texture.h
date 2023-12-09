@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include "blines_general.h"
+#include "rtw_stb_image.h"
 #include "color.h"
 
 class texture{
@@ -48,6 +49,27 @@ private:
     double inv_scale;
     shared_ptr<texture> even;
     shared_ptr<texture> odd;
+};
+
+class image_texture : public texture {
+public:
+    image_texture(const char* filename) : image(filename) {}
+
+    color value(double u, double v, const point3& p) const override {
+        if(image.height() <= 0) return color(0, 1, 1);
+
+        u = interval(0, 1).clamp(u);
+        v = 1.0 - interval(0, 1).clamp(v);
+
+        int i = static_cast<int>(u * image.width());
+        int j = static_cast<int>(v * image.height());
+        const unsigned char* pixel = image.pixel_data(i, j);
+
+        double color_scale = 1.0 / 255.0;
+        return color_scale * color(pixel[0], pixel[1], pixel[2]);
+    }
+private:
+    rtw_image image;
 };
 
 #endif

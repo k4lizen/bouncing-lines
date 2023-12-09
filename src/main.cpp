@@ -136,11 +136,33 @@ void two_balls(){
     cam.render(world);
 }
 
+void earth(){
+    auto earth_texture = make_shared<image_texture>("earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+    auto globe = make_shared<sphere>(point3(0, 0, 0), 2, earth_surface);
+
+    camera cam("image4.ppm");
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.image_width = 400;
+    cam.samples_per_pixel = 50;
+    cam.max_depth = 10;
+
+    cam.vfov = 20;
+    cam.lookfrom = point3(0, 0, 12);
+    cam.lookat = point3(0, 0, 0);
+    cam.vup = vec3(0, 1, 0);
+
+    cam.defocus_angle = 0;
+
+    cam.render(hittable_list(globe));
+}
+
 int main(){
-    switch(3){
+    switch(4){
         case 1: the_trio(); break;
         case 2: fun_balls(); break;
         case 3: two_balls(); break;
+        case 4: earth(); break;
     }
 
     return 0;
