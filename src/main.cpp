@@ -77,10 +77,7 @@ void fun_balls(){
     cam.render(world);
 }
 
-int main(){
-    fun_balls();
-    return 0;
-
+void the_trio(){
     hittable_list world;
 
     shared_ptr<material> material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
@@ -94,6 +91,8 @@ int main(){
     world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), -0.4, material_left));
     world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
     
+    world = hittable_list(make_shared<bvh_node>(world));
+
     camera cam("image.ppm");
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 400;
@@ -109,6 +108,40 @@ int main(){
     cam.focus_dist = 1;
 
     cam.render(world);
+}
+
+void two_balls(){
+    hittable_list world;
+
+    auto checker = make_shared<checker_texture>(1 / pi, color(.2, .3, .1), color(.9, .9, .9));
+
+    world.add(make_shared<sphere>(point3(0, -10, 0), 10, make_shared<lambertian>(checker)));
+    world.add(make_shared<sphere>(point3(0, 10, 0), 10, make_shared<lambertian>(checker)));
+
+    world = hittable_list(make_shared<bvh_node>(world));
+
+    camera cam("image3.ppm");
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.image_width = 400;
+    cam.samples_per_pixel = 50;
+    cam.max_depth = 10;
+
+    cam.vfov = 20;
+    cam.lookfrom = point3(13, 2, 3);
+    cam.lookat = point3(0, 0, 0);
+    cam.vup = vec3(0, 1, 0);
+
+    cam.defocus_angle = 0;
+
+    cam.render(world);
+}
+
+int main(){
+    switch(3){
+        case 1: the_trio(); break;
+        case 2: fun_balls(); break;
+        case 3: two_balls(); break;
+    }
 
     return 0;
 }
