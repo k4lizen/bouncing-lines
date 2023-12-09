@@ -12,6 +12,7 @@ public:
     vec3 normal;
     shared_ptr<material> mat;
     double t;
+    double u, v;
     bool front_face;
 
     // outward normal has to have unit lenght
