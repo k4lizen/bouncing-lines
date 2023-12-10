@@ -184,7 +184,7 @@ void two_perlin_spheres(){
 }
 
 int main(){
-    switch(4){
+    switch(5){
         case 1: the_trio(); break;
         case 2: fun_balls(); break;
         case 3: two_balls(); break;
