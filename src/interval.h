@@ -31,6 +31,10 @@ public:
         return interval(min - padding, max + padding);
     }
 
+    double size(){
+        return max - min;
+    }
+
     static const interval empty, universe;
 };
 
