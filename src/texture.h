@@ -79,7 +79,7 @@ public:
     noise_texture(double sc) : scale(sc) {}
 
     color value(double u, double v, const point3& p) const override {
-        return noise.noise(scale * p) * color(1, 1, 1);
+        return 0.5 * (1.0 + noise.noise(scale * p)) * color(1, 1, 1);
     }
 private:
     perlin noise;
