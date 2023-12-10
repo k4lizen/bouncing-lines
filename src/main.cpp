@@ -160,14 +160,14 @@ void earth(){
 void two_perlin_spheres(){
     hittable_list world;
 
-    auto pertext = make_shared<noise_texture>();
+    auto pertext = make_shared<noise_texture>(4);
 
     world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, make_shared<lambertian>(pertext)));
     world.add(make_shared<sphere>(point3(0, 2, 0), 2, make_shared<lambertian>(pertext)));
 
     world = hittable_list(make_shared<bvh_node>(world));
 
-    camera cam("image4.ppm");
+    camera cam("image5.ppm");
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 400;
     cam.samples_per_pixel = 50;
