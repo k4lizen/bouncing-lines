@@ -17,6 +17,8 @@ public:
     int image_width = 100;
     int samples_per_pixel = 10;
     int max_depth = 10;
+    color background;
+
     double vfov = 90; // has to be 0 < vfov < 180 
     point3 lookfrom = point3(0, 0, 0);
     point3 lookat = point3(0, 0, -1);
@@ -26,7 +28,7 @@ public:
     double focus_dist = 10;
 
     camera(std::string _filename) : filename(_filename) {}
-    camera() : camera("image.ppm") {}
+    camera() : camera("images\\image.ppm") {}
 
     void render(const hittable& world){
         initialize();
@@ -50,7 +52,7 @@ public:
     }
 
 private:
-    std::string filename = "image.ppm";
+    std::string filename = "images\\_image.ppm";
     int image_height;
     point3 center;
     point3 pixel00_loc;
@@ -93,21 +95,28 @@ private:
             return color(0, 0, 0);
         }
 
-        hit_record rec;
         static double acne_eps = 0.0000001; 
-        if(world.hit(r, interval(0.0 + acne_eps, infinity), rec)){
-            ray scattered;
-            color attenuation;
-            if(rec.mat->scatter(r, rec, attenuation, scattered)){
-                return attenuation * ray_color(scattered, depth - 1, world);
-            }
-            return color(0, 0, 0);
+
+        hit_record rec;
+        bool hasHit = world.hit(r, interval(0.0 + acne_eps, infinity), rec);
+        
+        if(!hasHit){
+            return background;
         }
 
-        // sky
-        vec3 unit_direction = unit_vector(r.direction());
-        double a = 0.5 * (unit_direction.y() + 1.0); // from [-1, 1] to [0, 1]
-        return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+        ray scattered;
+        color attenuation;
+        color color_from_emmision = rec.mat->emmited(rec.u, rec.v, rec.p);
+
+        bool hasScattered = rec.mat->scatter(r, rec, attenuation, scattered);
+
+        if(!hasScattered){
+            return color_from_emmision;
+        }
+
+        color color_from_scatter = attenuation * ray_color(scattered, depth - 1, world);
+
+        return color_from_emmision + color_from_scatter;
     }
 
     ray get_ray(int i, int j) const {
