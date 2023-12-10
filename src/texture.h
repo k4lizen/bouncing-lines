@@ -4,6 +4,7 @@
 #include "blines_general.h"
 #include "rtw_stb_image.h"
 #include "color.h"
+#include "perlin.h"
 
 class texture{
 public:
@@ -70,6 +71,17 @@ public:
     }
 private:
     rtw_image image;
+};
+
+class noise_texture : public texture {
+public:
+    noise_texture() {}
+
+    color value(double u, double v, const point3& p) const override {
+        return noise.noise(p) * color(1, 1, 1);
+    }
+private:
+    perlin noise;
 };
 
 #endif
