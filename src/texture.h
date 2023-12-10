@@ -81,7 +81,7 @@ public:
     color value(double u, double v, const point3& p) const override {
         point3 s = scale * p;
         // return noise.turb(s) * color(1, 1, 1);
-        return 0.5 * (1 + sin(s.z() * 10 + noise.turb(s))) * color(1, 1, 1);
+        return 0.5 * (1 + sin(s.z() + 10 * noise.turb(s))) * color(1, 1, 1);
     }
 private:
     perlin noise;
