@@ -1,7 +1,7 @@
 #ifndef PERLIN_H
 #define PERLIN_H
 
-#include "blines_general.h"
+#include "blines.h"
 
 class perlin {
 public:

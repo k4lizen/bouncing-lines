@@ -1,7 +1,7 @@
 #ifndef INTERVAL_H
 #define INTERVAL_H
 
-#include "blines_general.h"
+#include "blines.h"
 
 class interval{
 public:

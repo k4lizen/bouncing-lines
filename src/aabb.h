@@ -1,7 +1,7 @@
 #ifndef AABB_H
 #define AABB_H
 
-#include "blines_general.h"
+#include "blines.h"
 
 class aabb{
 public:

@@ -1,7 +1,7 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "blines_general.h"
+#include "blines.h"
 #include "color.h"
 #include "hittable.h"
 #include "texture.h"

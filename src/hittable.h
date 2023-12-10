@@ -1,7 +1,7 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "blines_general.h"
+#include "blines.h"
 #include "aabb.h"
 
 class material;

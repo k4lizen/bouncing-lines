@@ -1,5 +1,5 @@
-#ifndef BLINES_GENERAL_H
-#define BLINES_GENERAL_H
+#ifndef BLINES_H
+#define BLINES_H
 
 #include <cmath>
 #include <cstdlib>

@@ -1,4 +1,4 @@
-#include "blines_general.h"
+#include "blines.h"
 
 #include "bvh.h"
 #include "color.h"

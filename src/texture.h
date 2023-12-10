@@ -1,7 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "blines_general.h"
+#include "blines.h"
 #include "rtw_stb_image.h"
 #include "color.h"
 #include "perlin.h"

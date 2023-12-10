@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-#include "blines_general.h"
+#include "blines.h"
 #include "hittable.h"
 #include "hittable_list.h"
 
