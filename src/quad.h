@@ -70,4 +70,24 @@ private:
     vec3 w;
 };
 
+inline shared_ptr<hittable_list> box(const point3& a, const point3& b, shared_ptr<material> mat){
+    auto sides = make_shared<hittable_list>();
+
+    point3 min = point3(fmin(a.x(), b.x()), fmin(a.y(), b.y()), fmin(a.z(), b.z()));
+    point3 max = point3(fmax(a.x(), b.x()), fmax(a.y(), b.y()), fmax(a.z(), b.z()));
+
+    vec3 dx = vec3(max.x() - min.x(), 0, 0);
+    vec3 dy = vec3(0, max.y() - min.y(), 0);
+    vec3 dz = vec3(0, 0, max.z() - min.z());
+
+    sides->add(make_shared<quad>(point3(min.x(), min.y(), max.z()), dx, dy, mat));
+    sides->add(make_shared<quad>(point3(max.x(), min.y(), max.z()), -dz, dy, mat));
+    sides->add(make_shared<quad>(point3(max.x(), min.y(), min.z()), -dx, dy, mat));
+    sides->add(make_shared<quad>(point3(min.x(), min.y(), min.z()), dz, dy, mat)); 
+    sides->add(make_shared<quad>(point3(min.x(), max.y(), max.z()), dx, -dz, mat));
+    sides->add(make_shared<quad>(point3(min.x(), min.y(), min.z()), dx, dz, mat));
+
+    return sides;
+}
+
 #endif
