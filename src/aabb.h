@@ -30,7 +30,7 @@ public:
         return x;
     }
 
-    bool hit(const ray& r, interval& ray_t) const {
+    bool hit(const ray& r, interval ray_t) const {
         for(int a = 0; a < 3; ++a){
             double invd = 1 / r.direction()[a];
             double orig = r.origin()[a];
