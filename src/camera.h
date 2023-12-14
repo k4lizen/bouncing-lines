@@ -107,11 +107,27 @@ private:
         color attenuation;
         color color_from_emmision = rec.mat->emmited(rec.u, rec.v, rec.p);
 
-        double pdf = 0;
+        double pdf;
         bool hasScattered = rec.mat->scatter(r, rec, attenuation, scattered, pdf);
         if(!hasScattered){
             return color_from_emmision;
         }
+
+        point3 on_light = point3(random_double(213, 343), 554, random_double(227, 332));
+        vec3 to_light = on_light - rec.p;
+        double distance_squared = to_light.length_squared();
+        to_light = unit_vector(to_light);
+
+        if(dot(to_light, rec.normal) < 0)
+            return color_from_emmision;
+
+        double light_area = (343 - 213) * (332 - 227);
+        double light_cosine = fabs(to_light.y());
+        if(light_cosine < 0.000001)
+            return color_from_emmision;
+
+        pdf = distance_squared / (light_cosine * light_area);
+        scattered = ray(rec.p, to_light, r.time());
 
         double scattering_pdf = rec.mat->scattering_pdf(r, rec, scattered);
         // double pdf = scattering_pdf;
