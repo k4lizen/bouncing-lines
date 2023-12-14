@@ -99,7 +99,6 @@ private:
 
         hit_record rec;
         bool hasHit = world.hit(r, interval(0.0 + acne_eps, infinity), rec);
-        
         if(!hasHit){
             return background;
         }
@@ -109,12 +108,14 @@ private:
         color color_from_emmision = rec.mat->emmited(rec.u, rec.v, rec.p);
 
         bool hasScattered = rec.mat->scatter(r, rec, attenuation, scattered);
-
         if(!hasScattered){
             return color_from_emmision;
         }
 
-        color color_from_scatter = attenuation * ray_color(scattered, depth - 1, world);
+        double scattering_pdf = rec.mat->scattering_pdf(r, rec, scattered);
+        double pdf = 1/(2*pi);
+        color color_from_scatter = 
+            (attenuation * scattering_pdf * ray_color(scattered, depth - 1, world)) / pdf;
 
         return color_from_emmision + color_from_scatter;
     }
