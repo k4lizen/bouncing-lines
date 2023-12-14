@@ -107,13 +107,14 @@ private:
         color attenuation;
         color color_from_emmision = rec.mat->emmited(rec.u, rec.v, rec.p);
 
-        bool hasScattered = rec.mat->scatter(r, rec, attenuation, scattered);
+        double pdf = 0;
+        bool hasScattered = rec.mat->scatter(r, rec, attenuation, scattered, pdf);
         if(!hasScattered){
             return color_from_emmision;
         }
 
         double scattering_pdf = rec.mat->scattering_pdf(r, rec, scattered);
-        double pdf = scattering_pdf;
+        // double pdf = scattering_pdf;
         color color_from_scatter = 
             (attenuation * scattering_pdf * ray_color(scattered, depth - 1, world)) / pdf;
 
