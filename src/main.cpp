@@ -254,7 +254,7 @@ void simple_light(){
     cam.render(world);
 }
 
-void cornell_box(){
+void cornell_box(string filename){
     hittable_list world;
 
     auto red = make_shared<lambertian>(color(0.65, .05, .05));
@@ -283,7 +283,7 @@ void cornell_box(){
 
     world = hittable_list(make_shared<bvh_node>(world));
 
-    camera cam("images\\image8.ppm");
+    camera cam("images\\" + filename);
     cam.aspect_ratio = 1;
     cam.image_width = 600;
     cam.samples_per_pixel = 200;
@@ -428,10 +428,10 @@ int main(){
         case 5: two_perlin_spheres(); break;
         case 6: quads(); break;
         case 7: simple_light(); break;
-        case 8: cornell_box(); break;
+        case 8: cornell_box("image8.ppm"); break;
         case 9: cornell_smoke(); break;
         case 10: final_scene(800, 1000, 40); break;
-        default: final_scene(400, 250, 4); break;
+        case 11: cornell_box("image1.ppm"); break; // book3
     }
 
     return 0;
