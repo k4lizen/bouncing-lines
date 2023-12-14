@@ -161,4 +161,16 @@ inline vec3 refract(const vec3& v, const vec3 n, double etai_over_etat){
     return r_out_parallel + r_out_perp;
 }
 
+inline vec3 random_cosine_direction(){
+    double r1 = random_double();
+    double r2 = random_double();
+
+    double phi = 2 * pi * r1;
+    double x = cos(phi) * sqrt(r2);
+    double y = sin(phi) * sqrt(r2);
+    double z = sqrt(1 - r2);
+    
+    return vec3(x, y, z);
+}
+
 #endif
