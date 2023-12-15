@@ -106,7 +106,7 @@ private:
 
         ray scattered;
         color attenuation;
-        color color_from_emmision = rec.mat->emmited(r, rec, rec.u, rec.v, rec.p);
+        color color_from_emmision = rec.mat->emitted(r, rec, rec.u, rec.v, rec.p);
 
         double pdf_val; // corrects for our sampling 
         bool hasScattered = rec.mat->scatter(r, rec, attenuation, scattered, pdf_val);
