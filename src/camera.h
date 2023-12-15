@@ -110,6 +110,10 @@ private:
             return color_from_emmision;
         }
 
+        if(srec.skip_pdf){
+            return srec.attenuation * ray_color(srec.skip_pdf_ray, depth - 1, world, lights);
+        }
+
         auto light_pdf = make_shared<hittable_pdf>(lights, rec.p);
         mixture_pdf mixed_pdf(light_pdf, srec.pdf_ptr);
 

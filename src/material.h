@@ -6,6 +6,7 @@
 #include "hittable.h"
 #include "texture.h"
 #include "onb.h"
+#include "pdf.h"
 
 class scatter_record{
 public:
@@ -58,12 +59,12 @@ public:
     metal(const color& a, double f)  : albedo(a), fuzz(f < 1 ? f : 1) {}
 
     bool scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const override {
-        vec3 reflected_dir = reflect(r_in.direction(), rec.normal);
-        // scattered = ray(rec.p, reflected_dir + fuzz * random_unit_vector(), r_in.time());
         srec.attenuation = albedo;
-        // return (dot(scattered.direction(), rec.normal) > 0); // can be false only if fuzzing put it below the surface
-        return false;
-        // TODO
+        srec.pdf_ptr = nullptr;
+        srec.skip_pdf = true;
+        vec3 reflected = reflect(r_in.direction(), rec.normal);
+        srec.skip_pdf_ray = ray(rec.p, reflected + fuzz * random_in_unit_sphere(), r_in.time());
+        return true;
     }
 
 private:
@@ -76,8 +77,10 @@ public:
     dielectric(double index_of_refraction) : ir(index_of_refraction){}
 
     bool scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const override {
-        // TODO 
         srec.attenuation = color(1.0, 1.0, 1.0);
+        srec.pdf_ptr = nullptr;
+        srec.skip_pdf = true;
+
         double refraction_ratio = rec.front_face ? (1.0 / ir) : ir;
         
         vec3 unit_direction = unit_vector(r_in.direction());
@@ -93,7 +96,7 @@ public:
             direction = refract(unit_direction, rec.normal, refraction_ratio);
         }
 
-        //scattered = ray(rec.p, direction, r_in.time());
+        srec.skip_pdf_ray = ray(rec.p, direction, r_in.time());
         return true;
     }
 private:
