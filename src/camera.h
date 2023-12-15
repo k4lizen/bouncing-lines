@@ -31,7 +31,7 @@ public:
     camera(std::string _filename) : filename(_filename) {}
     camera() : camera("images\\image.ppm") {}
 
-    void render(const hittable& world){
+    void render(const hittable& world, const hittable& lights){
         initialize();
 
         std::ofstream image_file(filename);
@@ -43,7 +43,7 @@ public:
                 color pixel_color(0, 0, 0);
                 for(int sample = 0; sample < samples_per_pixel; ++sample){
                     ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, max_depth, world);
+                    pixel_color += ray_color(r, max_depth, world, lights);
                 }
                 write_color(image_file, pixel_color, samples_per_pixel);
             }
@@ -91,7 +91,7 @@ private:
         defocus_disk_v = v * defocus_radius;
     }
 
-    color ray_color(const ray& r, int depth, const hittable& world){
+    color ray_color(const ray& r, int depth, const hittable& world, const hittable& lights){
         if(depth <= 0){
             return color(0, 0, 0);
         }
@@ -108,20 +108,20 @@ private:
         color attenuation;
         color color_from_emmision = rec.mat->emmited(r, rec, rec.u, rec.v, rec.p);
 
-        double pdf_val;
+        double pdf_val; // corrects for our sampling 
         bool hasScattered = rec.mat->scatter(r, rec, attenuation, scattered, pdf_val);
         if(!hasScattered){
             return color_from_emmision;
         }
 
-        cosine_pdf surface_pdf(rec.normal);
-        scattered = ray(rec.p, surface_pdf.generate(), r.time());
-        pdf_val = surface_pdf.value(scattered.direction());
+        hittable_pdf light_pdf(lights, rec.p);
+        scattered = ray(rec.p, light_pdf.generate(), r.time());
+        pdf_val = light_pdf.value(scattered.direction());
 
-        double scattering_pdf = rec.mat->scattering_pdf(r, rec, scattered);
+        double scattering_pdf = rec.mat->scattering_pdf(r, rec, scattered); // corrects for material scatter probability
 
-        color color_from_scatter = 
-            (attenuation * scattering_pdf * ray_color(scattered, depth - 1, world)) / pdf_val;
+        color sample_color = ray_color(scattered, depth - 1, world, lights);
+        color color_from_scatter = (attenuation * scattering_pdf * sample_color) / pdf_val;
 
         return color_from_emmision + color_from_scatter;
     }

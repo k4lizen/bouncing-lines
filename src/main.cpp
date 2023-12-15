@@ -77,7 +77,7 @@ void fun_balls(){
     cam.defocus_angle = 0.6;
     cam.focus_dist = 10.0;
 
-    cam.render(world);
+    cam.render(world, world);
 }
 
 void the_trio(){
@@ -111,7 +111,7 @@ void the_trio(){
     cam.defocus_angle = 0;
     cam.focus_dist = 1;
 
-    cam.render(world);
+    cam.render(world, world);
 }
 
 void two_balls(){
@@ -138,7 +138,7 @@ void two_balls(){
 
     cam.defocus_angle = 0;
 
-    cam.render(world);
+    cam.render(world, world);
 }
 
 void earth(){
@@ -160,7 +160,7 @@ void earth(){
 
     cam.defocus_angle = 0;
 
-    cam.render(hittable_list(globe));
+    cam.render(hittable_list(globe), hittable_list(globe));
 }
 
 void two_perlin_spheres(){
@@ -187,7 +187,7 @@ void two_perlin_spheres(){
 
     cam.defocus_angle = 0;
 
-    cam.render(world);
+    cam.render(world, world);
 }
 
 void quads(){
@@ -221,7 +221,7 @@ void quads(){
 
     cam.defocus_angle = 0;
 
-    cam.render(world);
+    cam.render(world, world);
 }
 
 void simple_light(){
@@ -251,7 +251,7 @@ void simple_light(){
 
     cam.defocus_angle = 0;
 
-    cam.render(world);
+    cam.render(world, world);
 }
 
 void cornell_box(std::string filename){
@@ -279,7 +279,9 @@ void cornell_box(std::string filename){
     box2 = make_shared<translate>(box2, vec3(130, 0, 65));
     world.add(box2);
 
-    world.add(box(point3(265, 0, 295), point3(430, 330, 460), white));
+    hittable_list lights;
+    auto m = shared_ptr<material>();
+    lights.add(make_shared<quad>(point3(343, 554, 332), vec3(-130, 0, 0), vec3(0, 0, -105), m));
 
     world = hittable_list(make_shared<bvh_node>(world));
 
@@ -297,7 +299,7 @@ void cornell_box(std::string filename){
 
     cam.defocus_angle = 0;
 
-    cam.render(world);
+    cam.render(world, lights);
 }
 
 void cornell_smoke(){
@@ -343,7 +345,7 @@ void cornell_smoke(){
 
     cam.defocus_angle = 0;
 
-    cam.render(world);
+    cam.render(world, world);
 }
 
 void final_scene(int image_width, int samples_per_pixel, int max_depth){
@@ -416,7 +418,7 @@ void final_scene(int image_width, int samples_per_pixel, int max_depth){
 
     cam.defocus_angle = 0;
 
-    cam.render(world);
+    cam.render(world, world);
 }
 
 int main(){
@@ -432,7 +434,7 @@ int main(){
         case 8: cornell_box("image8.ppm"); break;
         case 9: cornell_smoke(); break;
         case 10: final_scene(800, 1000, 40); break;
-        
+
         case 11: cornell_box("image1.ppm"); break; // book3
     }
 
