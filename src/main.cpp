@@ -279,9 +279,8 @@ void cornell_box(std::string filename){
     box2 = make_shared<translate>(box2, vec3(130, 0, 65));
     world.add(box2);
 
-    hittable_list lights;
     auto m = shared_ptr<material>();
-    lights.add(make_shared<quad>(point3(343, 554, 332), vec3(-130, 0, 0), vec3(0, 0, -105), m));
+    quad light_obj(point3(343, 554, 332), vec3(-130, 0, 0), vec3(0, 0, -105), m);
 
     world = hittable_list(make_shared<bvh_node>(world));
 
@@ -299,7 +298,7 @@ void cornell_box(std::string filename){
 
     cam.defocus_angle = 0;
 
-    cam.render(world, lights);
+    cam.render(world, light_obj);
 }
 
 void cornell_smoke(){
