@@ -16,6 +16,10 @@ void write_color(std::ostream& out, color pixel_color, int samples_per_pixel){
     double g = pixel_color.y();
     double b = pixel_color.z();
 
+    if(r != r) r = 0;
+    if(g != g) g = 0;
+    if(b != b) b = 0;
+
     double scale = 1.0 / samples_per_pixel; // only one division instead of 4
     r *= scale;
     g *= scale;
