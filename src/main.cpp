@@ -304,7 +304,7 @@ void cornell_box(std::string filename){
     camera cam("images\\" + filename);
     cam.aspect_ratio = 1;
     cam.image_width = 600;
-    cam.samples_per_pixel = 500;
+    cam.samples_per_pixel = 1000;
     cam.max_depth = 50;
     cam.background = color(0, 0, 0);
 
