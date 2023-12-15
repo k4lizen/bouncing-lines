@@ -99,32 +99,27 @@ private:
         static double acne_eps = 0.0000001; 
 
         hit_record rec;
-        bool hasHit = world.hit(r, interval(0.0 + acne_eps, infinity), rec);
-        if(!hasHit){
+        if(!world.hit(r, interval(0.0 + acne_eps, infinity), rec)){
             return background;
         }
 
-        ray scattered;
-        color attenuation;
+        scatter_record srec; 
         color color_from_emmision = rec.mat->emitted(r, rec, rec.u, rec.v, rec.p);
 
-        double pdf_val; // corrects for our sampling 
-        bool hasScattered = rec.mat->scatter(r, rec, attenuation, scattered, pdf_val);
-        if(!hasScattered){
+        if(!rec.mat->scatter(r, rec, srec)){
             return color_from_emmision;
         }
 
-        auto p0 = make_shared<hittable_pdf>(lights, rec.p);
-        auto p1 = make_shared<cosine_pdf>(rec.normal);
-        mixture_pdf mixed_pdf(p0, p1);
+        auto light_pdf = make_shared<hittable_pdf>(lights, rec.p);
+        mixture_pdf mixed_pdf(light_pdf, srec.pdf_ptr);
 
-        scattered = ray(rec.p, mixed_pdf.generate(), r.time());
-        pdf_val = mixed_pdf.value(scattered.direction());
+        ray scattered = ray(rec.p, mixed_pdf.generate(), r.time());
+        double pdf_val = mixed_pdf.value(scattered.direction()); // corrects for our sampling 
 
         double scattering_pdf = rec.mat->scattering_pdf(r, rec, scattered); // corrects for material scatter probability
 
         color sample_color = ray_color(scattered, depth - 1, world, lights);
-        color color_from_scatter = (attenuation * scattering_pdf * sample_color) / pdf_val;
+        color color_from_scatter = (srec.attenuation * scattering_pdf * sample_color) / pdf_val;
 
         return color_from_emmision + color_from_scatter;
     }
