@@ -1,5 +1,5 @@
 # bouncing-lines
-A pretty okay ray tracer.\
+A ray tracer.\
 \
 Based on Peter Shirley's 4th edition [trilogy](https://github.com/RayTracing/raytracing.github.io).\
 \
